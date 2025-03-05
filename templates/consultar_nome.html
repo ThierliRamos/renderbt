@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta Nome</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            justify-content: center;
+            background-image: url('{{ url_for('static', filename='logo/ip.jpg') }}'); /* Caminho da imagem */
+            background-size: cover; /* Faz a imagem cobrir todo o fundo */
+            background-position: center; /* Centraliza a imagem */
+            background-repeat: no-repeat; /* Impede a repetição da imagem */
+            font-family: Arial, sans-serif;
+        }
+        .back-button {
+            background-color: #6827a5e1;
+            color: white;            
+            padding: 10px;            
+            border-radius: 5px;            
+            text-decoration: none;            
+            font-size: 16px;            
+            margin-bottom: 20px;  
+            margin-top: 50px;          
+            transition: background-color 0.3s;        
+            text-align: center;            
+            width: 165px;            
+        }
+        .back-button:hover {            
+            background-color: #5300a1e1;        
+        }
+        .container {
+            background-color: white;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px; 
+            margin-bottom: 20px; /* Espaço abaixo da caixa */
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            background-color: #6827a5e1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5300a1e1;
+        }
+        .result {
+            margin: 15px 0;
+            color: #333;
+            text-align: left; 
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            display: none; 
+            width: 400px; 
+            background-color: #fff; 
+        }
+        .error {
+            color: red; 
+            display: none; 
+        }
+    </style>
+</head>
+<body>
+
+<button class="back-button" onclick="location.href='{{ url_for('main') }}'">Voltar para o Início</button> <!-- Botão de Voltar --> 
+<div class="container">
+    <h1>Consultar Nome</h1>
+    <form id="nomeForm" onsubmit="pesquisarNome(); return false;">
+        <input type="text" id="nome" name="nome" placeholder="Digite o nome" required>
+        <button type="submit">Pesquisar</button>
+    </form>
+</div>
+
+<div class="result" id="result"></div> 
+<div class="error" id="error"></div> 
+
+<script>
+    function pesquisarNome() {
+        const nome = document.getElementById('nome').value;
+        const resultDiv = document.getElementById('result');
+        const errorDiv = document.getElementById('error');
+
+        // Limpar resultados e erros anteriores
+        resultDiv.style.display = 'none';
+        errorDiv.style.display = 'none';
+        resultDiv.innerHTML = '';
+        errorDiv.innerHTML = '';
+
+        if (!nome) {
+            errorDiv.innerHTML = 'Por favor, insira um nome.';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        // URL da API com AllOrigins
+        const corsUrl = 'https://api.allorigins.win/get?url=';
+        const apiUrl = `http://api2.minerdapifoda.xyz:8080/api/nomes?nome=${encodeURIComponent(nome)}`;
+
+        // Realiza a requisição utilizando AllOrigins
+        fetch(corsUrl + encodeURIComponent(apiUrl))
+            .then(response => response.json())
+            .then(data => {
+                // A resposta da API está dentro de 'contents' quando se usa AllOrigins
+                const jsonData = JSON.parse(data.contents);
+                console.log("Resposta da API:", jsonData);
+
+                if (jsonData && jsonData.Resultado) {
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = `<h3>Resultado para: "${nome}":</h3><pre>${jsonData.Resultado}</pre>`;
+                } else {
+                    errorDiv.innerHTML = 'Nenhum resultado encontrado.';
+                    errorDiv.style.display = 'block';
+                }
+            })
+            .catch(error => {
+                errorDiv.innerHTML = 'Erro ao buscar dados. Tente novamente.';
+                errorDiv.style.display = 'block';
+                console.error('Erro ao fazer a requisição:', error);
+            });
+    }
+</script>
+
+</body>
+</html>

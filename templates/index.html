@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column; /* Alinhar elementos em coluna */
+            min-height: 100vh; /* Garante que o body ocupe toda a altura da tela */
+            margin: 0;
+            background-color: #424141;
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* Impede rolagem */
+            background-image: url('{{ url_for('static', filename='logo/login.jpg') }}'); /* Caminho da imagem */
+            background-size: cover; /* Faz a imagem cobrir toda a área */
+            background-position: center; /* Centraliza a imagem */
+        }
+        .header {
+            background-color: #060607c2; /* Cor de fundo da barra superior */
+            color: white; /* Cor do texto */
+            height: 50px; /* Altura da barra */
+            width: 100%; /* Largura total */
+            padding: 10px 20px; /* Espaçamento em cima, embaixo e nas laterais */
+            display: flex; /* Usando flexbox para layout */
+            align-items: center; /* Centraliza verticalmente */
+        }
+        .header img {
+            height: 30px; /* Ajuste a altura da imagem conforme necessário */
+            margin-right: 10px; /* Espaçamento entre a imagem e o texto */
+            margin-left: 5px;
+        }
+        .welcome-message {
+            color: white; /* Cor da mensagem de boas-vindas */
+            text-align: center; /* Centraliza a mensagem */
+            margin-top: 20px; /* Ajustar para não sobrepor a barra */
+            margin-bottom: 10px; /* Espaçamento abaixo da mensagem */
+        }
+        .container {
+            background-color: rgb(10, 10, 10);
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 20px; /* Espaçamento interno */
+            box-shadow: 0 4px 16px rgba(81, 12, 192, 0.658);
+            text-align: center; /* Centraliza o conteúdo */
+            width: 90%; /* Largura responsiva */
+            max-width: 300px; /* Largura máxima */
+            height: 200px; /* Definindo altura fixa para o contêiner */
+            margin: 20px auto; /* Centraliza e adiciona espaçamento */
+            overflow: hidden; /* Impede rolagem interna */
+        }
+        h1 {
+            font-size: 14px; /* Tamanho da fonte do título */
+            margin: 0; /* Remove margens */
+            color: #ffffff;
+        }
+        h2 {
+            font-size: 45px; /* Tamanho da fonte da mensagem de boas-vindas */
+            margin: 0; /* Remove margens */
+            color: white;
+        }
+        h3 {
+            font-size: 20px; /* Tamanho da fonte da descrição */
+            margin-bottom: 10px; /* Espaçamento abaixo */
+            color: white;
+        }
+        h4 {
+            font-size: 20px; /* Tamanho da fonte do título do formulário */
+            margin: 0; /* Remove margens */
+            padding: 5px; /* Espaçamento interno */
+            color: #ffffff;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%; /* Largura total do campo */
+            padding: 5px; /* Espaçamento interno */
+            margin-bottom: 10px; /* Espaçamento abaixo */
+            border: 1px solid #ccc; /* Borda do campo */
+            border-radius: 5px; /* Bordas arredondadas */
+            box-sizing: border-box; /* Inclui padding e bordas na largura total */
+            font-size: 14px; /* Tamanho da fonte */
+        }
+        button {
+            padding: 10px; /* Espaçamento interno */
+            background-color: #6827a5e1; /* Cor de fundo do botão */
+            color: white; /* Cor do texto do botão */
+            border: none; /* Remove bordas */
+            border-radius: 5px; /* Bordas arredondadas */
+            cursor: pointer; /* Cursor de ponteiro ao passar o mouse */
+            width: 100%; /* Largura total do botão */
+            transition: background-color 0.3s; /* Efeito de transição */
+            font-size: 15px; /* Tamanho da fonte */
+        }
+        button:hover {
+            background-color: #218838; /* Cor ao passar o mouse */
+        }
+        .feedback {
+            display: none; /* Inicialmente oculto */
+            margin-top: 20px; /* Espaçamento acima */
+            color: white; /* Cor do feedback */
+            text-align: center; /* Centraliza o texto */
+        }
+        .feedback img { 
+            width: 30px; /* Define a largura da imagem (ajuste conforme necessário) */
+            height: 30px; /* Define a altura da imagem (ajuste conforme necessário) */
+            vertical-align: middle; /* Alinha a imagem verticalmente com o texto */
+            margin-right: 5px; /* Espaçamento à direita da imagem */
+        }
+        footer {
+    background-color: #060607c2;
+    text-align: center;
+    position: relative; /* Para manter o footer na parte inferior */
+    margin-top: auto; /* Para empurrar o rodapé para baixo */
+    color: #949292;
+    text-decoration: dotted;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{ url_for('static', filename='logo/ili2.png') }}" alt="Logo"> <!-- Caminho da imagem -->
+        <h1>Ilimithi Consultas</h1> <!-- Nome da plataforma -->
+    </div>
+    <div class="welcome-message">
+        <h2>Seja bem-vindo à Ilimithi Consultas</h2>
+        <h3>Plataforma de consultas de dados</h3> <!-- Mensagem de boas-vindas -->
+    </div>
+    <div class="container">
+        <h4>Login</h4>
+        <form id="loginForm" onsubmit="validarLogin(event)">
+            <input type="text" id="usuario" name="usuario" placeholder="Usuário" required>
+            <input type="password" id="senha" name="senha" placeholder="Senha" required>
+            <button type="submit">Entrar</button>
+        </form>
+        <div class="feedback" id="feedback"></div> <!-- Div para mensagens de feedback -->
+    </div>
+
+    <footer>
+        <p>Copyright © 2025 Ilimithi. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        async function validarLogin(event) {
+            event.preventDefault(); // Impede o envio do formulário
+
+            // Obter os valores dos campos
+            const usuario = document.getElementById('usuario').value;
+            const senha = document.getElementById('senha').value;
+            const feedbackDiv = document.getElementById('feedback');
+
+            // Fazer a requisição ao servidor
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `usuario=${encodeURIComponent(usuario)}&senha=${encodeURIComponent(senha)}`
+                });
+
+                // Verifica se a resposta é válida
+                const result = await response.json(); // Tenta converter a resposta em JSON
+
+                if (response.ok) { // Verifica se a resposta foi bem-sucedida
+                    // Exibe mensagem de sucesso
+                    feedbackDiv.innerHTML = `<img src="{{ url_for('static', filename='logo/aprovado.png') }}" alt="Sucesso"> Sucesso... Redirecionando!`;
+                    feedbackDiv.className = 'feedback success';
+                    feedbackDiv.style.display = 'block';
+
+                    // Redirecionar após 2 segundos
+                    setTimeout(() => {
+                        window.location.href = '/main'; // Redireciona para a página principal
+                    }, 2000);
+                } else { // Se a resposta não for ok
+                    // Exibe mensagem de erro
+                    feedbackDiv.innerHTML = `<img src="{{ url_for('static', filename='logo/erro.png') }}" alt="Erro"> Usuário inválido ou não registrado`;
+                    feedbackDiv.className = 'feedback error';
+                    feedbackDiv.style.display = 'block';
+                    
+                    // Ocultar a mensagem após 5 segundos
+                    setTimeout(() => {
+                        feedbackDiv.style.display = 'none';
+                    }, 5000);
+                }
+            } catch (error) {
+                console.error('Erro ao fazer a requisição:', error); // Log de erro
+                feedbackDiv.innerHTML = `<img src="{{ url_for('static', filename='logo/erro.png') }}" alt="Erro"> Ocorreu um erro ao tentar fazer login.`;
+                feedbackDiv.className = 'feedback error';
+                feedbackDiv.style.display = 'block';
+                
+                // Ocultar a mensagem após 2 segundos
+                setTimeout(() => {
+                    feedbackDiv.style.display = 'none';
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>

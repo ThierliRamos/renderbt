@@ -1,0 +1,131 @@
+/* Reset básico para garantir que o estilo seja aplicado uniformemente */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Para ocupar a altura total da tela */
+    background-color: #f8f9fa; /* Cor de fundo suave */
+}
+
+header {
+    display: flex;
+    justify-content: center; /* Espaço entre logo e nav */
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #ffffff; /* Cor de fundo do cabeçalho */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para o cabeçalho */
+}
+
+.nav-buttons ul {
+    display: flex;
+    list-style-type: none; /* Remove marcadores da lista */
+}
+
+.nav-buttons li {
+    margin-left: 20px; /* Espaçamento entre os itens do menu */
+}
+
+.nav-buttons a {
+    text-decoration: none; /* Remove sublinhado do link */
+    padding: 10px 15px;
+    background-color: #28a745; /* Cor de fundo verde */
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.nav-buttons a:hover {
+    background-color: #218838; /* Cor ao passar o mouse */
+}
+
+main {
+    flex: 1; /* Faz o main ocupar o espaço disponível */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza o conteúdo */
+    padding: 20px; /* Espaçamento interno */
+}
+
+.centralizado {
+    text-align: center; /* Centraliza o texto */
+    margin-bottom: 20px; /* Espaçamento abaixo do título */
+}
+
+.service-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os botões na coluna */
+    gap: 15px; /* Aumenta o espaçamento entre os botões */
+}
+
+.service-buttons button {
+    padding: 15px; /* Aumenta o preenchimento */
+    background-color: #28a745; /* Cor de fundo dos botões */
+    color: white; /* Cor do texto dos botões */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 300px; /* Largura fixa para todos os botões */
+    transition: background-color 0.3s;
+    font-size: 16px; /* Aumenta o tamanho da fonte */
+}
+
+.service-buttons button:hover {
+    background-color: #218838; /* Cor ao passar o mouse */
+}
+
+footer {
+    background-color: #f4f4f4;
+    text-align: center;
+    padding: 15px;
+    position: relative; /* Para manter o footer na parte inferior */
+    margin-top: auto; /* Para empurrar o rodapé para baixo */
+    border-top: 1px solid #ccc; /* Linha acima do rodapé */
+}
+
+.download-text {
+    text-align: center; /* Centraliza o texto */
+    margin: 20px 0; /* Espaçamento acima e abaixo do texto */
+    font-size: 18px; /* Aumenta o tamanho da fonte */
+    color: #333; /* Cor do texto */
+}
+
+
+.download-box button {
+    background-color: #050505; /* Cor de fundo do botão */
+    color: white; /* Cor do texto do botão */
+    border: none;
+    border-radius: 5px;
+    padding: 15px; /* Aumenta o preenchimento do botão */
+    width: 100%; /* Largura total da caixa */
+    transition: background-color 0.3s;
+    font-size: 16px; /* Aumenta o tamanho da fonte */
+}
+
+.download-box button:hover {
+    background-color: #218838; /* Cor ao passar o mouse */
+    text-transform: initial;
+}
+
+.help-button {
+    background-color: #28a745; /* Cor de fundo do botão */
+    color: white; /* Cor do texto do botão */
+    border: none;
+    border-radius: 5px;
+    padding: 15px; /* Aumenta o preenchimento do botão */
+    width: 300px; /* Largura fixa para o botão */
+    cursor: pointer;
+    transition: background-color 0.3s;
+    font-size: 16px; /* Aumenta o tamanho da fonte */
+    margin: 10px 0; /* Espaçamento acima e abaixo do botão */
+}
+
+.help-button:hover {
+    background-color: #218838; /* Cor ao passar o mouse */
+}

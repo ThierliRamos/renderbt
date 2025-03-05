@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vídeo do YouTube</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-image: url('{{ url_for('static', filename='logo/youtube4.jpg') }}'); /* Caminho da imagem */
+    background-size: cover; /* Faz a imagem cobrir todo o fundo */
+    background-position: center; /* Centraliza a imagem */
+    background-repeat: no-repeat; /* Impede a repetição da imagem */
+}
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 300px;
+            margin: auto;
+            background: white;
+            padding: 40px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 80%;
+            padding: 10px;
+            background-color: #6827a5e1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #5300a1e1;
+        }
+        .back-button {
+            width: auto;
+            padding: 10px;
+            background-color: #6827a5e1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+        .back-button:hover {
+            background-color: #5300a1e1;
+        }
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+        }
+        .download-completed 
+        {    color: green; /* Define a cor da mensagem como verde */}
+    </style>
+</head>
+<body>
+    <button class="back-button" onclick="location.href='{{ url_for('main') }}'">Voltar para o Início</button>
+    <div class="container">
+        <h1>Baixe Vídeos do YouTube</h1>
+        <input type="text" id="url" placeholder="Cole a URL do vídeo aqui">
+        <button id="download-btn">Baixar Vídeo</button>
+        <div class="message" id="status-message" style="display:none;"></div>
+    </div>
+
+    <script>
+        document.getElementById('download-btn').addEventListener('click', function() {
+    const url = document.getElementById('url').value;
+    const statusMessage = document.getElementById('status-message');
+
+    // Mostrar a mensagem de status
+    statusMessage.textContent = 'Baixando o Vídeo. Aguarde...';
+    statusMessage.style.display = 'block';
+
+    // Usar fetch para fazer a requisição
+    fetch('/youtube2/download_video', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({ url: url })
+    })
+    .then(response => {
+        if (response.ok) {
+            const title = response.headers.get('X-Title');  // Obter o título do cabeçalho
+            return response.blob().then(blob => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);  // Criar o objeto URL a partir do blob
+                link.download = title ? `${title}.mp4` : 'video.mp4'; // Usar o título ou um padrão
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            });
+        } else {
+            return response.text().then(text => { throw new Error(text); });
+        }
+    })
+    .then(() => {
+        // Atualizar a mensagem de status após o download
+        statusMessage.textContent = 'Download Concluído!';
+        statusMessage.classList.add('download-completed'); // Adiciona a classe para mudar a co
+        setTimeout(() => {
+            statusMessage.style.display = 'none'; // Remover a mensagem após 6 segundos
+        }, 6000);
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao baixar o vídeo: ' + error.message);
+
+        // Remover a mensagem de status em caso de erro
+        statusMessage.textContent = '';
+        statusMessage.style.display = 'none';
+    });
+});
+    </script>
+</body>
+</html>

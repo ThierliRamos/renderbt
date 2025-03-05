@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo ao DownCrazy</title>
+</head>
+
+<style>
+    * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Para ocupar a altura total da tela */
+    background-image: url('{{ url_for('static', filename='logo/login.jpg') }}'); /* Caminho da imagem de fundo */
+    background-size: cover; /* Faz a imagem cobrir toda a área disponível */
+    background-position: center; /* Centraliza a imagem */
+    background-repeat: no-repeat; /* Evita que a imagem se repita */
+}
+
+header {
+    display: flex;
+    justify-content: center; /* Espaço entre logo e nav */
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #060607c2; /* Cor de fundo do cabeçalho */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra para o cabeçalho */
+    height: 70px;
+}
+
+h1 {
+    color: #f4f4f4;
+    text-align: center;
+    font-size: 30px;
+}
+
+main {
+    flex: 1; /* Faz o main ocupar o espaço disponível */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza o conteúdo */
+    padding: 20px; /* Espaçamento interno */
+}
+
+.centralizado {
+    text-align: center; /* Centraliza o texto */
+    margin-bottom: 20px; /* Espaçamento abaixo do título */
+    color: #f4f4f4;
+    font-size: 25px;
+    margin-top: 40px; /* Aumentar o espaçamento acima */
+}
+
+.service-buttons {
+    display: flex;
+    flex-direction: column; /* Coloca os botões em coluna */
+    align-items: center; /* Centraliza os botões */
+    width: 100%; /* Garante que ocupe toda a largura */
+}
+
+.service-buttons button {
+    padding: 15px; /* Aumenta o preenchimento */
+    background-color: #6827a5e1; /* Cor de fundo dos botões */
+    color: white; /* Cor do texto dos botões */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 80%; /* Largura responsiva para os botões */
+    max-width: 300px; /* Largura máxima para os botões */
+    transition: background-color 0.3s;
+    font-size: 16px; /* Aumenta o tamanho da fonte */
+}
+
+.service-buttons button:hover {
+    background-color: #40027ae1; /* Cor ao passar o mouse (ajuste para um tom mais escuro) */
+}
+
+.card-group {
+    display: flex; /* Usar flexbox para organizar os cards dentro do grupo */
+    justify-content: center; /* Centraliza os cards dentro do grupo */
+    flex-wrap: wrap; /* Permite que os cards se movam para a linha seguinte se não houver espaço */
+    margin: 0; /* Margem entre os grupos de cards */
+    width: 100%; /* Garante que o grupo ocupe toda a largura disponível */
+}
+
+.card {
+    display: flex; /* Habilita o uso de flexbox */
+    flex-direction: column; /* Organiza o conteúdo na vertical */
+    justify-content: space-between; /* Distribui o espaço entre o conteúdo e o botão */
+    border: 1px solid #ccc; /* Borda leve */
+    border-radius: 8px; /* Bordas arredondadas */
+    padding: 10px; /* Preenchimento interno */
+    margin: 10px; /* Margem entre os cards */
+    text-align: center; /* Centraliza o texto */
+    background-color: #fff; /* Cor de fundo dos cards */
+    color: #333; /* Cor do texto */
+    flex: 1 1 calc(30% - 20px); /* Flexível com base na largura da tela */
+    max-width: 300px; /* Limita a largura máxima do card */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra leve para dar profundidade */
+    transition: transform 0.2s; /* Transição suave para o efeito de hover */
+}
+
+.card:hover {
+    transform: scale(1.05); /* Aumenta ligeiramente o card ao passar o mouse */
+}
+
+.card p {
+    margin: 10px 0; /* Espaçamento acima e abaixo das descrições reduzido */
+}
+
+.card button {
+    margin-top: auto; /* Move o botão para a parte inferior do card */
+    font-size: 16px; /* Ajusta o tamanho da fonte do botão */
+    padding: 10px; /* Ajusta o preenchimento do botão */
+    width: 100%; /* Botão ocupa toda a largura do card */
+}
+
+.download-text {
+    text-align: center; /* Centraliza o texto */
+    margin: 20px 0; /* Espaçamento acima e abaixo do texto */
+    font-size: 25px; /* Tamanho da fonte padrão */
+    color: #6827a5e1; /* Cor do texto */
+    width: 100%; /* Largura total para garantir que se ajuste */
+}
+
+.background-text {
+    display: block; /* Garante que o fundo ocupe toda a largura */
+    background-color: #f0f0f0; /* Cor de fundo desejada */
+    width: 100%; /* Largura de 100% */
+    height: 35px; /* Altura do fundo */
+    margin: 10px 0; /* Margem acima e abaixo do fundo */
+    border-radius: 7px;
+}
+
+/* Estilo adicional para a imagem centralizada */
+.centralized-image {
+    display: block;
+    margin: 20px auto; /* Centraliza a imagem e adiciona espaçamento */
+    max-width: 100%; /* Garante que a imagem não ultrapasse a largura do contêiner */
+    height: auto; /* Mantém a proporção da imagem */
+}
+
+/* Media Queries para ajustar o tamanho do texto em telas menores */
+@media (max-width: 600px) {
+    .download-text {
+        font-size: 20px; /* Tamanho da fonte menor em telas pequenas */
+        margin: 15px 0; /* Menor margem em telas pequenas */
+    }
+
+    .background-text {
+        height: 30px; /* Ajusta a altura do fundo em telas pequenas */
+        width: 70%;
+        margin: 0 auto; /* Centraliza horizontalmente */
+    }
+
+    .card {
+        flex: 1 1 calc(100% - 20px); /* Largura total em dispositivos móveis */
+        margin: 5px; /* Margem reduzida para evitar overflow */
+    }
+    .header {
+        margin-top: 20px;
+    }
+}
+
+footer {
+    background-color: #060607c2;
+    text-align: center;
+    padding: 15px;
+    position: relative; /* Para manter o footer na parte inferior */
+    margin-top: auto; /* Para empurrar o rodapé para baixo */
+    color: #949292;
+    text-decoration: dotted;
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 992px) {
+    .card {
+        flex: 1 1 calc(45% - 20px); /* Largura para dispositivos menores (2 cards por linha) */
+    }
+}
+</style>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Download de Músicas e Consultas</h1>
+        </div>
+    </header>
+
+    <main>
+        <section id="outros">
+            <h2 class="centralizado">Nossos Serviços:</h2>
+            <div class="service-buttons">
+                <div class="card-group">
+                    <div class="card">
+                        <p>Verifique a validade de um número BIN.</p>
+                        <button onclick="location.href='{{ url_for('bin_page') }}'"><b>Consultar BIN</b></button>
+                    </div>
+                    <div class="card">
+                        <p>Consulte informações associadas a um CPF.</p>
+                        <button onclick="location.href='{{ url_for('consultar_cpf') }}'"><b>Consultar CPF</b></button>
+                    </div>
+                    <div class="card">
+                        <p>Descubra informações sobre um número de Telefone.</p>
+                        <button onclick="location.href='{{ url_for('consultar_tel') }}'"><b>Consultar Telefone</b></button>
+                    </div>
+                </div>
+                <div class="card-group">
+                    <div class="card">
+                        <p>Busque dados a partir de um Nome.</p>
+                        <button onclick="location.href='{{ url_for('consultar_nome') }}'"><b>Consultar Nome</b></button>
+                    </div>
+                    <div class="card">
+                        <p>Obtenha informações sobre um endereço IP.</p>
+                        <button onclick="location.href='{{ url_for('ip_page') }}'"><b>Consultar IP</b></button>
+                    </div>
+                </div>
+            </div>
+
+            <p class="download-text">
+                <span class="background-text"><b>Baixe do YouTube e outros...</b></span>
+            </p>
+
+            <!-- Imagem centralizada -->
+            <img src="{{ url_for('static', filename='logo/img.avif') }}" alt="Baixar Músicas" class="centralized-image">
+
+            <div class="service-buttons">
+                <div class="card-group">
+                    <div class="card">
+                        <p>Faça download de músicas diretamente.</p>
+                        <button onclick="location.href='{{ url_for('download_audio') }}'"><b>Baixar Músicas</b></button>
+                    </div>
+                    <div class="card">
+                        <p>Baixe vídeos do YouTube facilmente.</p>
+                        <button onclick="location.href='{{ url_for('download_video') }}'"><b>Baixar Vídeos</b></button>
+                    </div>
+                    <div class="card">
+                        <p>Baixe listas do YouTube.</p>
+                        <button onclick="consultar('Baixar Listas')"><b>Baixar Listas</b></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Copyright © 2025 Ilimithi. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        function consultar(tipo) {
+            alert('Você selecionou: ' + tipo);
+            // Aqui você pode adicionar lógica para consultar listas, se necessário
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador de BIN</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column; /* Para empilhar os elementos verticalmente */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('{{ url_for('static', filename='logo/ip.jpg') }}'); /* Caminho da imagem */
+            background-size: cover; /* Faz a imagem cobrir todo o fundo */
+            background-position: center; /* Centraliza a imagem */
+            background-repeat: no-repeat; /* Impede a repetição da imagem */
+            font-family: Arial, sans-serif;
+        }
+        .back-button {
+            background-color: #6827a5e1; /* Cor verde */
+            color: white;            
+            padding: 10px 20px;            
+            border-radius: 5px;            
+            text-decoration: none; /* Remove sublinhado do link */            
+            font-size: 16px;            
+            margin-bottom: 20px; /* Espaçamento abaixo do botão */            
+            transition: background-color 0.3s;        
+            text-align: center; /* Centraliza o texto */
+        }        
+        .back-button:hover {            
+            background-color: #5300a1e1; /* Cor ao passar o mouse */        
+        }
+        .container {
+            background-color: white;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            background-color: #6827a5e1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5300a1e1;
+        }
+        .message {
+            margin: 15px 0;
+            color: #333;
+            font-weight: bold;
+            text-align: left; /* Para alinhar à esquerda */
+        }
+    </style>
+</head>
+<body>
+    <a href="/main" class="back-button">Voltar para o Início</a> <!-- Botão estilizado -->
+    <div class="container">
+        <h1>Verificador de BIN</h1>
+        <form action="{{ url_for('check_bin') }}" method="POST">        
+            <input type="text" name="bin" placeholder="Digite o BIN" required>        
+            <button type="submit">Verificar</button>    
+        </form>
+        {% if message %}        
+        <div>{{ message | safe }}</div>  <!-- Exibe a mensagem retornada -->    
+        {% endif %}
+    </div>
+</body>
+</html>
