@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <style>
+        * {
+            box-sizing: border-box; /* Inclui padding e bordas na largura total */
+        }
         body {
             display: flex;
             flex-direction: column; /* Alinhar elementos em coluna */
@@ -12,10 +15,10 @@
             margin: 0;
             background-color: #424141;
             font-family: Arial, sans-serif;
-            overflow: hidden; /* Impede rolagem */
             background-image: url('{{ url_for('static', filename='logo/login.jpg') }}'); /* Caminho da imagem */
             background-size: cover; /* Faz a imagem cobrir toda a área */
             background-position: center; /* Centraliza a imagem */
+            overflow: auto; /* Permite rolagem quando necessário */
         }
         .header {
             background-color: #060607c2; /* Cor de fundo da barra superior */
@@ -25,6 +28,7 @@
             padding: 10px 20px; /* Espaçamento em cima, embaixo e nas laterais */
             display: flex; /* Usando flexbox para layout */
             align-items: center; /* Centraliza verticalmente */
+            position: relative; /* Permite que a posição do logo seja relativa */
         }
         .header img {
             height: 30px; /* Ajuste a altura da imagem conforme necessário */
@@ -45,10 +49,8 @@
             box-shadow: 0 4px 16px rgba(81, 12, 192, 0.658);
             text-align: center; /* Centraliza o conteúdo */
             width: 90%; /* Largura responsiva */
-            max-width: 300px; /* Largura máxima */
-            height: 200px; /* Definindo altura fixa para o contêiner */
+            max-width: 400px; /* Largura máxima */
             margin: 20px auto; /* Centraliza e adiciona espaçamento */
-            overflow: hidden; /* Impede rolagem interna */
         }
         h1 {
             font-size: 14px; /* Tamanho da fonte do título */
@@ -56,12 +58,12 @@
             color: #ffffff;
         }
         h2 {
-            font-size: 45px; /* Tamanho da fonte da mensagem de boas-vindas */
+            font-size: 30px; /* Tamanho da fonte da mensagem de boas-vindas */
             margin: 0; /* Remove margens */
             color: white;
         }
         h3 {
-            font-size: 20px; /* Tamanho da fonte da descrição */
+            font-size: 18px; /* Tamanho da fonte da descrição */
             margin-bottom: 10px; /* Espaçamento abaixo */
             color: white;
         }
@@ -73,11 +75,10 @@
         }
         input[type="text"], input[type="password"] {
             width: 100%; /* Largura total do campo */
-            padding: 5px; /* Espaçamento interno */
+            padding: 10px; /* Espaçamento interno */
             margin-bottom: 10px; /* Espaçamento abaixo */
             border: 1px solid #ccc; /* Borda do campo */
             border-radius: 5px; /* Bordas arredondadas */
-            box-sizing: border-box; /* Inclui padding e bordas na largura total */
             font-size: 14px; /* Tamanho da fonte */
         }
         button {
