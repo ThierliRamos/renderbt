@@ -1,14 +1,18 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify, Response
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, Response, send_file
 import os
 import requests  # Importa a biblioteca requests
 import yt_dlp
+import http.client
+import json
 import re  # Adiciona a importação do módulo re
 from bin import verificar_bin
 from ip import buscar_informacoes_ip
 from urllib.parse import quote  # Importação correta
+from flask_cors import CORS
 
 app = Flask(__name__)
-app.secret_key = 'uma_chave_secreta'
+app.secret_key = 'uma_chave_secreta'  # Defina sua chave secreta
+CORS(app)  # Isso permitirá requisições de qualquer origem
 
 def verificar_credenciais(usuario, senha):
     with open('usuarios.txt', 'r') as f:
@@ -224,7 +228,7 @@ def consultar_nome():
     return render_template('consultar_nome.html')
 
 
-# ROTA DE DOWNLOAD DE VÍDEO
+# ROTA DE DOWNLOAD DE VÍDEO DO YOUTUBE
 @app.route('/youtube2/download_video', methods=['GET', 'POST'])
 def download_video():
     if not session.get('logged_in'):
@@ -362,7 +366,6 @@ def download_audio():
                     'Content-Disposition': f'attachment; filename="{quote(titulo)}.mp3"',
                     'X-Title': titulo  # Adiciona o título como um cabeçalho extra
                 })
-                return response
             else:
                 return jsonify(message="❌ Áudio não encontrado ou não disponível!"), 404
 
@@ -372,6 +375,61 @@ def download_audio():
 
     return render_template('youtube.html')  # Retorna o HTML para a página de download
 
+# BAIXAR VIDEOS DO TIKTOK
+
+# Rota para a página do TikTok
+@app.route('/tiktok')
+def tiktok_page():
+    return render_template('tiktok.html')  # Renderiza a página de download do TikTok
+
+# Rota para baixar vídeos do TikTok
+@app.route('/tiktok/download_video', methods=['POST'])
+def download_tiktok_video():
+    if request.method == 'POST':
+        video_url = request.json.get('url')
+
+        if not video_url:
+            return jsonify({'message': 'A URL é necessária!'}), 400
+
+        conn = http.client.HTTPSConnection("auto-download-all-in-one-big.p.rapidapi.com")
+
+        payload = json.dumps({"url": video_url})
+
+        headers = {
+            'x-rapidapi-key': "SUA_CHAVE_API_AQUI",
+            'x-rapidapi-host': "auto-download-all-in-one-big.p.rapidapi.com",
+            'Content-Type': "application/json"
+        }
+
+        conn.request("POST", "/v1/social/autolink", payload, headers)
+
+        res = conn.getresponse()
+        data = res.read()
+
+        if res.status != 200:
+            return jsonify({'message': 'Erro ao baixar o vídeo.'}), 500
+
+        response_data = json.loads(data.decode("utf-8"))
+
+        title = response_data.get('title', 'video')
+        video_urls = response_data.get('medias', [])
+
+        if not video_urls:
+            return jsonify({'message': 'Nenhum vídeo disponível para download.'}), 404
+
+        download_url = None
+        for media in video_urls:
+            if media['quality'] == 'no_watermark':
+                download_url = media['url']
+                break
+            elif media['quality'] == 'hd_no_watermark':
+                download_url = media['url']
+
+        if not download_url:
+            return jsonify({'message': 'Nenhum vídeo disponível sem marca d\'água.'}), 404
+
+        return jsonify({'url': download_url, 'title': title})
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port)  # Executa o aplicativo Flask
