@@ -11,9 +11,9 @@
             align-items: center;
             margin: 0;
             background-image: url('{{ url_for('static', filename='logo/ip.jpg') }}'); /* Caminho da imagem */
-            background-size: cover; /* Faz a imagem cobrir todo o fundo */
-            background-position: center; /* Centraliza a imagem */
-            background-repeat: no-repeat; /* Impede a repetição da imagem */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             font-family: Arial, sans-serif;
         }
         .back-button {
@@ -40,7 +40,7 @@
             box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
             text-align: center;
             width: 300px; 
-            margin-bottom: 20px; /* Espaço abaixo da caixa */
+            margin-bottom: 20px;
         }
         h1 {
             font-size: 24px;
@@ -92,7 +92,7 @@
 </head>
 <body>
 
-    <button class="back-button" onclick="location.href='{{ url_for('main') }}'">Voltar para o Início</button> <!-- Botão de Voltar -->
+<button class="back-button" onclick="location.href='{{ url_for('main') }}'">Voltar para o Início</button> <!-- Botão de Voltar --> 
 
 <div class="container">
     <h1>Baixar Vídeo do TikTok</h1>
@@ -108,9 +108,6 @@
 <div class="error" id="error"></div> 
 
 <script>
-    const apiKey = "99bb57d209mshb6ca809dc147a3ep1a51e7jsnf829ae92aef6"; // Sua chave da API TikTok
-    const apiHost = "auto-download-all-in-one-big.p.rapidapi.com"; // Host da API TikTok
-
     function baixarVideo() {
         const videoUrl = document.getElementById('videoUrl').value;
         const resultDiv = document.getElementById('result');
@@ -131,19 +128,16 @@
         }
 
         const payload = JSON.stringify({ url: videoUrl });
-        const headers = {
-            'Content-Type': 'application/json',
-            'x-rapidapi-key': apiKey,
-            'x-rapidapi-host': apiHost
-        };
 
         // Mostrar mensagem de "Baixando, aguarde..."
         statusMessage.textContent = 'Baixando, aguarde...';
         statusMessage.style.display = 'block';
 
-        fetch(`https://${apiHost}/v1/social/autolink`, {
+        fetch('/tiktok/download_video', {  // Rota do Flask para download
             method: 'POST',
-            headers: headers,
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: payload
         })
         .then(response => {
@@ -154,52 +148,27 @@
         })
         .then(data => {
             const title = data.title || 'video';
-            const videoUrls = data.medias;
+            const downloadUrl = data.url;
 
-            if (!videoUrls || videoUrls.length === 0) {
+            if (!downloadUrl) {
                 errorDiv.innerHTML = 'Nenhum vídeo disponível para download.';
                 errorDiv.style.display = 'block';
                 return;
             }
 
-            let downloadUrl = null;
-            for (const media of videoUrls) {
-                if (media.quality === 'no_watermark') {
-                    downloadUrl = media.url;
-                    break;
-                } else if (media.quality === 'hd_no_watermark') {
-                    downloadUrl = media.url; // Fallback para HD se não houver marca d'água
-                }
-            }
-
-            if (!downloadUrl) {
-                errorDiv.innerHTML = 'Nenhum vídeo disponível sem marca d\'água.';
-                errorDiv.style.display = 'block';
-                return;
-            }
-
             // Inicia o download do vídeo
-            return fetch(downloadUrl)
-                .then(videoResponse => {
-                    if (!videoResponse.ok) {
-                        throw new Error('Erro ao baixar o vídeo.');
-                    }
-                    return videoResponse.blob();
-                })
-                .then(blob => {
-                    const link = document.createElement('a');
-                    link.href = URL.createObjectURL(blob);
-                    link.download = `${title}.mp4`;
-                    document.body.appendChild(link);
-                    link.click();
-                    link.remove();
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = `${title}.mp4`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
 
-                    // Mostrar mensagem de "Download concluído!"
-                    statusMessage.textContent = 'Download concluído!';
-                    setTimeout(() => {
-                        statusMessage.style.display = 'none'; // Oculta a mensagem após 6 segundos
-                    }, 6000);
-                });
+            // Mostrar mensagem de "Download concluído!"
+            statusMessage.textContent = 'Download concluído!';
+            setTimeout(() => {
+                statusMessage.style.display = 'none'; // Oculta a mensagem após 6 segundos
+            }, 6000);
         })
         .catch(error => {
             errorDiv.innerHTML = error.message;
