@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baixar Vídeo do TikTok</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            background-image: url('{{ url_for('static', filename='logo/ip.jpg') }}'); /* Caminho da imagem */
+            background-size: cover; /* Faz a imagem cobrir todo o fundo */
+            background-position: center; /* Centraliza a imagem */
+            background-repeat: no-repeat; /* Impede a repetição da imagem */
+            font-family: Arial, sans-serif;
+        }
+        .back-button {
+            background-color: #6827a5e1;
+            color: white;            
+            padding: 10px;            
+            border-radius: 5px;            
+            text-decoration: none;            
+            font-size: 16px;            
+            margin-bottom: 20px;  
+            margin-top: 100px;          
+            transition: background-color 0.3s;        
+            text-align: center;            
+            width: 165px;            
+        }
+        .back-button:hover {            
+            background-color: #5300a1e1;        
+        }
+        .container {
+            background-color: white;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 300px; 
+            margin-bottom: 20px; /* Espaço abaixo da caixa */
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            background-color: #6827a5e1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #5300a1e1;
+        }
+        .result {
+            margin: 15px 0;
+            color: #333;
+            text-align: left; 
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            display: none; 
+            width: 400px; 
+            background-color: #fff; 
+        }
+        .error {
+            color: red; 
+            display: none; 
+        }
+        .status-message {
+            color: green; 
+            display: none; 
+            margin-top: 10px; 
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" onclick="location.href='{{ url_for('main') }}'">Voltar para o Início</button> <!-- Botão de Voltar -->
+
+<div class="container">
+    <h1>Baixar Vídeo do TikTok</h1>
+    <form id="videoForm" onsubmit="baixarVideo(); return false;">
+        <input type="text" id="videoUrl" placeholder="Cole a URL do vídeo aqui" required>
+        <button type="submit">Baixar Vídeo</button>
+    </form>
+    <div class="status-message" id="statusMessage"></div> <!-- Mensagem de status -->
+</div>
+
+<!-- Seção para resultados e erros -->
+<div class="result" id="result"></div> 
+<div class="error" id="error"></div> 
+
+<script>
+    const apiKey = "99bb57d209mshb6ca809dc147a3ep1a51e7jsnf829ae92aef6"; // Sua chave da API TikTok
+    const apiHost = "auto-download-all-in-one-big.p.rapidapi.com"; // Host da API TikTok
+
+    function baixarVideo() {
+        const videoUrl = document.getElementById('videoUrl').value;
+        const resultDiv = document.getElementById('result');
+        const errorDiv = document.getElementById('error');
+        const statusMessage = document.getElementById('statusMessage');
+
+        // Limpar resultados e erros anteriores
+        resultDiv.style.display = 'none';
+        errorDiv.style.display = 'none';
+        resultDiv.innerHTML = '';
+        errorDiv.innerHTML = '';
+        statusMessage.style.display = 'none'; // Limpar mensagem de status
+
+        if (!videoUrl) {
+            errorDiv.innerHTML = 'A URL do vídeo é necessária!';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        const payload = JSON.stringify({ url: videoUrl });
+        const headers = {
+            'Content-Type': 'application/json',
+            'x-rapidapi-key': apiKey,
+            'x-rapidapi-host': apiHost
+        };
+
+        // Mostrar mensagem de "Baixando, aguarde..."
+        statusMessage.textContent = 'Baixando, aguarde...';
+        statusMessage.style.display = 'block';
+
+        fetch(`https://${apiHost}/v1/social/autolink`, {
+            method: 'POST',
+            headers: headers,
+            body: payload
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao baixar o vídeo.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const title = data.title || 'video';
+            const videoUrls = data.medias;
+
+            if (!videoUrls || videoUrls.length === 0) {
+                errorDiv.innerHTML = 'Nenhum vídeo disponível para download.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            let downloadUrl = null;
+            for (const media of videoUrls) {
+                if (media.quality === 'no_watermark') {
+                    downloadUrl = media.url;
+                    break;
+                } else if (media.quality === 'hd_no_watermark') {
+                    downloadUrl = media.url; // Fallback para HD se não houver marca d'água
+                }
+            }
+
+            if (!downloadUrl) {
+                errorDiv.innerHTML = 'Nenhum vídeo disponível sem marca d\'água.';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Inicia o download do vídeo
+            return fetch(downloadUrl)
+                .then(videoResponse => {
+                    if (!videoResponse.ok) {
+                        throw new Error('Erro ao baixar o vídeo.');
+                    }
+                    return videoResponse.blob();
+                })
+                .then(blob => {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `${title}.mp4`;
+                    document.body.appendChild(link);
+                    link.click();
+                    link.remove();
+
+                    // Mostrar mensagem de "Download concluído!"
+                    statusMessage.textContent = 'Download concluído!';
+                    setTimeout(() => {
+                        statusMessage.style.display = 'none'; // Oculta a mensagem após 6 segundos
+                    }, 6000);
+                });
+        })
+        .catch(error => {
+            errorDiv.innerHTML = error.message;
+            errorDiv.style.display = 'block';
+            console.error('Erro ao baixar vídeo:', error);
+        });
+    }
+</script>
+
+</body>
+</html>
